@@ -7,14 +7,12 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
+<style>
     :root{
       --bg:#e9f1ff; --ink:#1e1f23; --muted:#6b7280; --card:#ffffff;
       --glow: 0 0 32px rgba(255,255,255,.9), 0 0 64px rgba(255,255,255,.6);
-      --tile: 92vw;         /* mobile: show one large tile */
-      --arrowW: 48px; --arrowPad: 10px;
-      --gap: 16px;
-      --radius: 16px;
+      --tile: 92vw; --arrowW: 48px; --arrowPad: 10px; --gap: 16px; --radius: 16px;
+      --btn-blue:#2563eb;
     }
     *{box-sizing:border-box}
     html,body{margin:0;padding:0}
@@ -25,6 +23,14 @@
     header{text-align:center;padding:28px 14px 8px}
     header .addr{font-family:'Great Vibes',cursive;font-size:clamp(28px,5vw,40px);margin:0 0 6px}
     header .price{margin:6px 0 4px;font-weight:800}
+    header .ownership-badge{
+      display:inline-block;background:yellow;color:#0b1220;
+      font-weight:800;padding:6px 12px;border-radius:9999px;margin-left:8px;font-size:13px;
+      box-shadow:0 8px 22px rgba(0,0,0,.12);
+    }
+    @media (max-width:480px){
+      header .ownership-badge{display:block;margin:8px auto 0;max-width:max-content}
+    }
     header .meta{margin:0 0 12px;color:var(--muted);font-weight:600;letter-spacing:.2px}
 
     /* Carousel */
@@ -39,7 +45,6 @@
       box-shadow:0 8px 22px rgba(0,0,0,.10);transition:box-shadow .25s ease, filter .25s ease, opacity .25s ease;
       cursor:pointer; opacity:1; filter:none;     /* mobile: no blur/fade */
     }
-    /* Uniform image framing (prevents weird crops): */
     .slide img{
       width:100%;
       aspect-ratio:16/9;
@@ -48,8 +53,6 @@
       border-radius:var(--radius);
       user-select:none; pointer-events:none;
     }
-
-    /* “Active” glow looks nice on larger screens only */
     @media (min-width:768px){
       .slide{opacity:.9; filter:saturate(.95)}
       .slide.active{opacity:1; filter:saturate(1); box-shadow:var(--glow), 0 10px 28px rgba(0,0,0,.12)}
@@ -69,8 +72,40 @@
     /* Sections */
     .section{max-width:1200px;margin:0 auto;padding:0 18px}
     .overview{background:#fff;border-radius:var(--radius);box-shadow:0 10px 28px rgba(0,0,0,.08);padding:26px 20px;margin:8px auto 36px}
-    .overview h2{font-size:clamp(22px,3.2vw,32px);margin:0 0 12px}
     .overview p{line-height:1.7;font-size:clamp(15px,2.6vw,17px);margin:0}
+
+    /* Overview header + small inline buttons */
+    .overview-header{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;
+    }
+    .overview-header h2{
+      margin:0;font-size:clamp(22px,2.6vw,28px);display:flex;align-items:center;gap:12px;
+    }
+    .overview-buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{
+      background:#1e3a8a;color:#fff;font-weight:600;text-decoration:none;
+      padding:6px 12px;font-size:14px;border-radius:6px;transition:background .25s ease;
+      display:inline-flex;align-items:center;gap:6px
+    }
+    .btn:hover{background:#0f265f}
+    .btn.secondary{background:var(--btn-blue)}
+    .btn.secondary:hover{background:#1e4dc2}
+    @media (max-width:480px){
+      .overview-header{flex-direction:column;align-items:flex-start;gap:12px}
+      .overview-buttons{width:100%;gap:10px}
+      .overview-buttons .btn{flex:1 1 auto;justify-content:center}
+    }
+
+    /* Video (keeps aspect, no crop/distortion; vertical videos will pillarbox) */
+    .video-outer{max-width:1200px;margin:0 auto 36px;padding:0 18px}
+    .video{
+      position:relative;padding-top:56.25%; /* 16:9 frame */height:0;overflow:hidden;
+      border-radius:16px;box-shadow:0 8px 22px rgba(0,0,0,.12);
+      background:#0b1220;
+    }
+    .video iframe{
+      position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:16px;
+    }
 
     /* Footer */
     .site-footer{
@@ -86,14 +121,10 @@
     .footer-line{margin:6px 0;color:var(--muted);font-weight:600}
     .footer-line a{color:inherit;text-decoration:none}
     .footer-line a:hover{text-decoration:underline}
-    .footer-img{width:120px;height:120px;object-fit:cover;border-radius:14px;box-shadow:0 10px 26px rgba(0,0,0,.14);background:#fff;padding:8px;margin:0 auto}
-    .footer-img.logo{border-radius:16px; width:120px; height:auto; padding:10px}
-    .breakable{overflow-wrap:anywhere; word-break:break-word}
-
-    /* Desktop footer layout */
+    .footer-img{width:120px;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 10px 26px rgba(0,0,0,.14);background:#fff;padding:8px;margin:0 auto}
+    .footer-img.logo{border-radius:16px;width:120px;height:auto;padding:10px}
     @media (min-width:768px){
-      .footer-inner{grid-template-columns:180px 1fr 180px; text-align:initial; padding:28px 24px; gap:22px}
-      .footer-img{margin:0}
+      .footer-inner{grid-template-columns:180px 1fr 180px;text-align:initial;padding:28px 24px;gap:22px}
       .right{text-align:right}
     }
 
@@ -125,42 +156,6 @@
     .lb-zones .zone{flex:1 1 50%;cursor:pointer;background:transparent}
     .lb-zones .left{cursor:w-resize}
     .lb-zones .right{cursor:e-resize}
-
-    /* --- Footer fixes --- */
-
-/* Don't crop the headshot; let it size naturally */
-.footer-img { 
-  width: 120px;
-  height: auto;          /* was a fixed square; caused top crop */
-  object-fit: contain;   /* show full headshot */
-  padding: 0;            /* avoid extra framing that can look like a cut-off */
-}
-
-/* Keep the logo square but uncropped inside its frame */
-.footer-img.logo {
-  width: 120px;
-  height: auto;
-  object-fit: contain;
-  padding: 10px;
-}
-
-/* Make the middle column truly centered on desktop and mobile */
-.footer-col.center {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;   /* vertical centering */
-  align-items: center;
-}
-
-/* Ensure the whole row centers its contents vertically */
-.footer-inner { align-items: center; }
-
-/* If you prefer the three-column desktop layout, keep right aligned logo only */
-@media (min-width: 768px){
-  .right { text-align: right; }
-}
-
   </style>
 </head>
 <body>
@@ -169,7 +164,7 @@
   <header>
     <h1 class="addr">2385 Stepping Stones Way, Colorado Springs, CO 80904</h1>
      <!-- <strong style="text-decoration: line-through; text-decoration-color: red; text-decoration-thickness: 2px;">$549,000</strong> <br> -->
-    <p class="price"> COMING SOON! $225,000</p>
+    <p class="price"> For Sale $225,000</p>
     <p class="meta">2 Beds / 1 Bath / 1 Assigned Parking Space</p>
   </header>
 
@@ -181,8 +176,8 @@
 
     <div class="track" id="track">
       <!-- 01..52 -->
-      <div class="slide"><img src="images/01.jpeg" alt="Image 1"></div>
-      <!-- <div class="slide"><img src="images/02.jpg" alt="Image 2"></div>
+      <div class="slide"><img src="images/01.jpg" alt="Image 1"></div>
+      <div class="slide"><img src="images/02.jpg" alt="Image 2"></div>
       <div class="slide"><img src="images/03.jpg" alt="Image 3"></div>
       <div class="slide"><img src="images/04.jpg" alt="Image 4"></div>
       <div class="slide"><img src="images/05.jpg" alt="Image 5"></div>
@@ -210,7 +205,7 @@
       <div class="slide"><img src="images/27.jpg" alt="Image 27"></div>
       <div class="slide"><img src="images/28.jpg" alt="Image 28"></div>
       <div class="slide"><img src="images/29.jpg" alt="Image 29"></div>
-      <div class="slide"><img src="images/30.jpg" alt="Image 30"></div>
+      <!-- <div class="slide"><img src="images/30.jpg" alt="Image 30"></div>
       <div class="slide"><img src="images/31.jpg" alt="Image 31"></div>
       <div class="slide"><img src="images/32.jpg" alt="Image 32"></div>
       <div class="slide"><img src="images/33.jpg" alt="Image 33"></div>
@@ -243,13 +238,20 @@
   <!-- Overview -->
   <section class="section">
     <article class="overview">
-      <h2>Overview</h2>
+      <div class="overview-header">
+        <h2>Overview</h2>
+        <div class="overview-buttons">
+          <!-- <a href="images/Fractional_Ownership_Brochure.pdf" class="btn" download>📄 Fractional Ownership Brochure</a> -->
+          <a href="" class="btn secondary" target="_blank" rel="noopener">🏠 View 3D Tour</a>
+        </div>
+      </div>
+
       <p>Charming and centrally located starter condo featuring privacy and stunning Pikes Peak views. Perfect for starters, can be used as a rental for investment opportunities or even those who are ready to downsize and settle down into a cozy little condo.</p>
     </article>
   </section>
 
   <!-- Footer -->
-  <footer class="site-footer">
+    <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-col left">
         <a href="tel:17193105185" aria-label="Call Matt">
@@ -257,12 +259,12 @@
         </a>
       </div>
 
-      <div class="footer-col center">
+      <div class="footer-col center" style="text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;">
         <p class="footer-title">Contact Matt Tolooee, Your Real Estate GPS!</p>
         <p class="footer-line"><a href="tel:17193105185">719.310.5185</a></p>
-        <p class="footer-line breakable"><a href="mailto:matt@metro-realestategroup.com">matt@metro-realestategroup.com</a></p>
-        <p class="footer-line breakable"><a href="https://metrorealestategroup.co/">metrorealestategroup.co</a></p>
-        <p class="footer-line breakable"><a href="https://linktr.ee/metrorealestategroup">linktr.ee/metrorealestategroup</a></p>
+        <p class="footer-line"><a href="mailto:matt@metro-realestategroup.com">matt@metro-realestategroup.com</a></p>
+        <p class="footer-line"><a href="https://metrorealestategroup.co/">metrorealestategroup.co</a></p>
+        <p class="footer-line"><a href="https://linktr.ee/metrorealestategroup">linktr.ee/metrorealestategroup</a></p>
         <p class="footer-line">106 N Tejon Street, Colorado Springs, CO 80903</p>
       </div>
 
@@ -288,15 +290,10 @@
   </div>
 
   <script>
+    /* --------- Responsive tile sizing ---------
+       <768px: 1 tile, 768–1099px: 2 tiles, 1100px+: 3 tiles
+    -------------------------------------------*/
     const track = document.getElementById('track');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    /* Responsive tile sizing:
-       - <768px: 1 tile
-       - 768–1099px: 2 tiles
-       - 1100px+: 3 tiles
-    */
     function setTileSize(){
       const cs = getComputedStyle(track);
       const padL = parseFloat(cs.paddingLeft), padR = parseFloat(cs.paddingRight);
@@ -311,7 +308,7 @@
     }
     window.addEventListener('resize', setTileSize);
 
-    /* Carousel with clones (keeps your original behavior) */
+    /* --------- Carousel with clones (infinite) --------- */
     const originals = Array.from(track.querySelectorAll('.slide'));
     const N = originals.length;
     const firstClone = originals[0].cloneNode(true);
@@ -320,7 +317,10 @@
     track.appendChild(firstClone);
     const slides = Array.from(track.querySelectorAll('.slide'));
 
-    let index = 1; // start at real first slide
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let index = 1; // start at image 01 (with last on the left)
 
     function applyStates(i){
       // Only decorate on wider screens; mobile keeps everything solid
@@ -367,7 +367,7 @@
       whenReady().then(() => centerSlide(index, true));
     });
 
-    /* Lightbox */
+    /* --------- Lightbox --------- */
     const lb = document.getElementById('lightbox');
     const lbImg = document.getElementById('lb-img');
     const lbCount = document.getElementById('lb-count');
@@ -394,10 +394,14 @@
     }
     function lightboxMove(dir){ move(dir); updateLightbox(); }
 
+    // open from tile
     slides.forEach((s,i)=> s.addEventListener('click', () => openLightbox(i)));
+
     lbClose.addEventListener('click', (e)=>{ e.stopPropagation(); closeLightbox(); });
     zoneLeft.addEventListener('click',  (e)=>{ e.stopPropagation(); lightboxMove(-1); });
     zoneRight.addEventListener('click', (e)=>{ e.stopPropagation(); lightboxMove(1); });
+
+    // clicking the backdrop itself does nothing
     lb.addEventListener('click', (e) => { if (e.target === lb) { /* no-op */ } });
 
     // keyboard + swipe
